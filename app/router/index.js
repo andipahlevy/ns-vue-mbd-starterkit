@@ -27,6 +27,8 @@ import formsPage from '../views/Categories/Forms'
 import modalsPage from '../views/Categories/Modals'
 import navigationPage from '../views/Categories/Navigation'
 
+import mainpage from '../MainPage'
+
 const router = { 
    home, 
    buttons,
@@ -53,7 +55,9 @@ const router = {
    cssPage,
    formsPage,
    modalsPage,
-   navigationPage
+   navigationPage,
+   
+   mainpage,
 }
 
 export default router
