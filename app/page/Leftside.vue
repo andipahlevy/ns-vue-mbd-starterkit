@@ -1,9 +1,8 @@
 <template>
-	<StackLayout ~drawerContent backgroundColor="#34495e">
+	<StackLayout ~drawerContent backgroundColor="#2ed573">
 		<Label class="drawer-header" text="Welcome" @tap="$goto('mainpage')"/>
 		<Label class="drawer-item" text="Home"/>
-		<Label class="drawer-item" text="List Download"/>
-		<Label class="drawer-item" text="Keluar"/>
+		<Label class="drawer-item" text="Keluar" @tap="exit"/>
 	</StackLayout>
 </template>
  
@@ -35,7 +34,7 @@ export default {
 	padding: 50 16 16 16;
 	margin-bottom: 20;
 	margin-top: 0;
-	background-color: #2c3e50;
+	background-color: #ffa502;
 	color: #ffffff;
 	font-size: 24;
 }

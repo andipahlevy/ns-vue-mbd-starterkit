@@ -1,6 +1,8 @@
 import Vue from 'nativescript-vue'
 import router from './router'
 import { isAndroid, isIOS } from 'tns-core-modules/platform'
+import store from './store';
+
 
 Vue.prototype.$isAndroid = isAndroid
 Vue.prototype.$isIOS = isIOS
@@ -23,5 +25,8 @@ Vue.config.silent = (TNS_ENV === 'production')
 Vue.registerElement('RadSideDrawer', () => require('nativescript-ui-sidedrawer').RadSideDrawer)
 
 new Vue({
-  render: h => h('frame', [h(router['mainpage'])])
+	store,
+	render: h => h('frame', [h(router['mainpage'])])
 }).$start()
+
+store.dispatch("init");
