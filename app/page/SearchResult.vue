@@ -10,6 +10,11 @@
 			<StackLayout padding="20 10 10 10">
 				  <Label text="Hasil pencarian:" textWrap="true" color="black" textAlignment="center" />
 				  <Label :text="query" marginTop="4" textWrap="true" textAlignment="center" />
+				  <Button v-if="reload" @tap="fetcData">
+					  <FormattedString>
+						<Span text="Reload" />
+					  </FormattedString>
+					</Button>
 				  <ActivityIndicator marginTop="10" v-if="busyIndicator" :busy="busyIndicator" @busyChange="onBusyChanged" />
 			</StackLayout> 
 			<WrapLayout v-for="(item,k) in listOfItems" :key="k" padding="10" borderWidth="0" borderColor="#d8d8d8">
@@ -31,6 +36,7 @@
 </template>
 
 <script>
+import ModalComponent from "./Modal";
 import { Navigation } from './../views/Navigation'
 import { MDBBtn } from './../components/Components/Button'
 import { MDBIcon } from './../components/Content/Icon'
@@ -52,7 +58,8 @@ export default {
 		return{
 			title:'Pencarian',
 			listOfItems: [],
-			busyIndicator: true
+			busyIndicator: true,
+			reload:false
 		}
 	},
 	props:['query'],
@@ -64,18 +71,26 @@ export default {
 	},
 	methods: {
 		fetcData(){
-		
+			this.busyIndicator =  true
+			this.reload = false
 			console.log('Start fetc data')
-			fetch("http://18.218.193.86:8890/youtube/search?q="+this.query)
+			fetch("http://videv.online/cv/SHD/example/coba.php?token=c27e08db3072576643542c8a37dfdc07&q="+this.query)
 				.then((response) => response.json())
 				.then((r) => {
-					console.log(r[0])
-					if(r[0] === undefined){
+					if(r.code == 400){
 						snackbar.simple('Terjadi kesalahan, tunggu beberapa saat', 'white', 'red', 3, false)
 						this.busyIndicator =  false
+						this.reload = true
 						return false
-					}
-						r.forEach(v=>{
+					}else{
+						this.busyIndicator =  false
+							
+						if(r.contents.length === 0){
+							snackbar.simple('Tidak ada data ditemukan. Coba lagi', 'white', 'red', 3, false)
+							this.reload = true
+							return false
+						}
+						r.contents.forEach(v=>{
 							if(v.duration && v.duration.length < 5 ){
 								this.listOfItems.push(
 									{
@@ -89,6 +104,7 @@ export default {
 								)
 							}
 						})
+					}
 					
 					console.log('end fetc data')
 					this.busyIndicator =  false
@@ -114,20 +130,24 @@ export default {
 					// options: true, // optional iOS
 					// animated: true // optional iOS
 				// });
-				// snackbar.simple('Mp3 tersimpan di folder Download', 'white', '#3498db', 3, false)
+				
+				this.$showModal(ModalComponent, { props: { id: 14 }});
+				
+				snackbar.simple('Mp3 tersimpan di folder Download', '#fff', '#3498db', 3, false)
 				return false
 			}
 			console.log('Start Download')
 			console.log(title)
 			this.listOfItems[k]['download_text'] = 'Preparing...'
-			let url = "http://18.218.193.86:8889/ymp3?id=https://www.youtube.com/watch?v="+id+"&title="+title
+			let newTitle = title.replace(/[^a-zA-Z0-9\- ]/g, "").split(' ').join('-')
+			let url = "http://18.218.193.86:8889/ymp3?id=https://www.youtube.com/watch?v="+id+"&title="+newTitle
 			console.log(url)
 			fetch(url)
 				.then((response) => response.json())
 				.then((r) => {
 					if(r.file){
 						this.listOfItems[k]['download_text'] = 'Downloading...'
-						this.pull_file(title,k);
+						this.pull_file(newTitle,k);
 					}
 				})
 				.catch((e) => {
@@ -140,7 +160,9 @@ export default {
 			download.addProgressCallback(progress => {
 				this.listOfItems[k]['download_text'] = 'Downloading '+(Math.round(progress*100))+'%'
 			})
-			download.downloadFile("http://18.218.193.86/converter/"+filename+".mp3").then(file => {
+			console.log("Cekidot:")
+			console.log("http://videv.online/converter/"+filename+".mp3")
+			download.downloadFile("http://videv.online/converter/"+filename+".mp3").then(file => { 
 				console.log("Success", file);
 				
 				console.log(123)
@@ -186,8 +208,15 @@ export default {
 			return str.includes("Channel")
 		},
 		capitalizeFirstLetter(string) {
-		  return string.charAt(0).toUpperCase() + string.slice(1);
+		  return this.replace_all(string.charAt(0).toUpperCase() + string.slice(1), {'lirik':'','Lirik':'','Lyrics':'','lyrics':'','lyric':'','Lyric':'','Official':'','official':''});
 		},
+		replace_all(str, obj) {
+			var retStr = str;
+			for (var x in obj) {
+				retStr = retStr.replace(new RegExp(x, 'g'), obj[x]);
+			}
+			return retStr;
+		}
 	},
 	created(){		
 		console.log('Mounted')

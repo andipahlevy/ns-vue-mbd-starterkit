@@ -42,13 +42,14 @@ import search from './page/SearchResult'
 import Leftside from './page/Leftside'
 import * as fs from "tns-core-modules/file-system"
 const permissions = require('nativescript-permissions');
+import ModalComponent from "./page/Modal";
 
 export default {
 	name: 'Home',
 	data(){
 		return{
-			title:'Audio MP3 Downloader',
-			query : 'Ungu cinta dalam hati',
+			title:'MP3 Music Downloader',
+			query : '',
 		}
 	},
 	components: {
@@ -59,6 +60,10 @@ export default {
 	},
 	methods: {
 		find(){
+			console.log(223);
+			this.$showModal(ModalComponent, { props: { id: 14 }, fullscreen: false});
+		},
+		findx(){
 			console.log(123)
 			if(this.query == '' || this.query === null){
 				console.log(234)

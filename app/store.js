@@ -55,7 +55,7 @@ export default new Vuex.Store({
         });
     },
     query(context) {
-        context.state.database.all("SELECT vid, date FROM download", []).then(result => {
+        context.state.database.all("SELECT  vid, date FROM download", []).then(result => {
             context.commit("load", { data: result });
         }, error => {
             console.log("SELECT ERROR", error);
