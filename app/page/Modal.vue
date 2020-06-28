@@ -11,10 +11,13 @@
 			width="90%"
 			margin="5"
 			/>
+			
+		<Label class="modalText center tebal" :text="title" 		textWrap="true"/>
+		<Label class="modalText center" :text="timeString" 	textWrap="true"/>
 		
 		<Slider v-model="time" :maxValue="maxTime" width="100%" @valueChange="changeTime"/>
 		
-		<WrapLayout align="center" padding="10" borderWidth="1" borderColor="#d8d8d8">
+		<WrapLayout class="center" padding="10" borderWidth="1" borderColor="#d8d8d8">
           <MDBBtn v-show="playShow" icon="play" @tap.native="play" mdbColor="default" width="50" />
           <MDBBtn v-show="pauseShow" icon="pause" @tap.native="pause" mdbColor="secondary" width="50" />
           <MDBBtn v-show="stopShow" icon="stop" @tap.native="stop" mdbColor="info" width="50" />
@@ -35,7 +38,7 @@ import { MDBBtn } from './../components/Components/Button'
 let id;
 
 export default {
-	props: ['mp3','pic'],
+	props: ['mp3','pic','title'],
 	components: {
 		MDBBtn,
 	},
@@ -52,7 +55,7 @@ export default {
 		puaseText:'JEDA',
 		time:0,
 		maxTime:0,
-		timeString:'--:--:--',
+		timeString:'--:--',
 		}
 	},
 	methods: {
@@ -91,6 +94,7 @@ export default {
 				
 				if(this.maxTime <= this.time){
 					this.stop()
+					return false
 				}
 				
 				if(!this.isPause){
@@ -124,7 +128,7 @@ export default {
 		stop(){
 			clearInterval(id);
 			this.time = 0
-			this.timeString = '--:--:--'
+			this.timeString = '--:--'
 			console.log(this.time)
 			
 			player.pause()
@@ -147,7 +151,7 @@ export default {
 			seconds = Math.floor(time - minutes * 60),
 			milliseconds = time.slice(-3);
 
-			return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2);
+			return pad(minutes, 2) + ':' + pad(seconds, 2);
 		},
 	},
 	
@@ -163,5 +167,17 @@ export default {
 </script>
 
 <style scoped>
-
+.modalText{
+	color:#000;
+	font-size:12;
+	height:30;
+	margin:0 15;
+	line-height: 1%;
+}
+.tebal{	
+	font-weight:bold;
+}
+.center{	
+	horizontal-align: center;
+}
 </style>

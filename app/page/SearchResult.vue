@@ -133,7 +133,11 @@ export default {
 		},
 		download(id, title, k){
 			if(this.listOfItems[k]['downloaded']){
-				this.$showModal(ModalComponent, { props: { mp3: this.listOfItems[k]['downloaded_path'], pic:this.listOfItems[k]['pic'] }, fullscreen: false});
+				this.$showModal(ModalComponent, { props: {
+						mp3: this.listOfItems[k]['downloaded_path'], 
+						pic:this.listOfItems[k]['pic'],
+						title:this.listOfItems[k]['title'],
+					}, fullscreen: false});
 				return false
 			}
 			console.log('Start Download')
