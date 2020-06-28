@@ -18,14 +18,16 @@ export default new Vuex.Store({
 			for(var i = 0; i < data.data.length; i++) {
 				state.data.push({
 					vid: data.data[i][0],
-					date: data.data[i][1]
+					title: data.data[i][1],
+					path: data.data[i][2],
 				});
 			}
 		},
 		save(state, data) {
 			state.data.push({
 				vid: data.data.vid,
-				date: data.data.date
+				title: data.data.title,
+				path: data.data.path,
 			});
 		},
 		delete(state, data) {
@@ -37,7 +39,7 @@ export default new Vuex.Store({
 		
 	init(context) {
         (new Sqlite("my.db")).then(db => {
-            db.execSQL("CREATE TABLE IF NOT EXISTS download (id INTEGER PRIMARY KEY AUTOINCREMENT, vid TEXT, date TEXT)").then(id => {
+            db.execSQL("CREATE TABLE IF NOT EXISTS download (id INTEGER PRIMARY KEY AUTOINCREMENT, vid TEXT, title TEXT, path TEXT)").then(id => {
                 context.commit("init", { database: db });
             }, error => {
                 console.log("CREATE TABLE ERROR", error);
@@ -47,7 +49,7 @@ export default new Vuex.Store({
         });
     },
     insert(context, data) {
-        context.state.database.execSQL("INSERT INTO download (vid, date) VALUES (?, ?)", [data.vid, data.date]).then(id => {
+        context.state.database.execSQL("INSERT INTO download (vid, title, path) VALUES (?, ?, ?)", [data.vid, data.title, data.path]).then(id => {
             context.commit("save", { data: data });
 			console.log("INSERTING....")
         }, error => {
@@ -55,7 +57,7 @@ export default new Vuex.Store({
         });
     },
     query(context) {
-        context.state.database.all("SELECT  vid, date FROM download", []).then(result => {
+        context.state.database.all("SELECT  vid, title, path FROM download", []).then(result => {
             context.commit("load", { data: result });
         }, error => {
             console.log("SELECT ERROR", error);

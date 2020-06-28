@@ -23,7 +23,7 @@
 					  <Label :text="item.title" fontSize="15" class="mdb-font-bold" color="black" />
 					  <Label :text="item.duration" fontSize="12" paddingTop="2" />
 					  <WrapLayout>
-						<MDBBtn :text="item.download_text" backgroundColor="#2ed573" color="white" marginTop="15" padding="10" 
+						<MDBBtn :text="item.download_text" :backgroundColor="item.btn_color" color="white" marginTop="15" padding="10" 
 							horizontalAlignment="center" 
 							@tap.native="download(item.vid, item.title, k)" />
 					  </WrapLayout>
@@ -71,6 +71,7 @@ export default {
 	},
 	methods: {
 		fetcData(){
+			
 			this.busyIndicator =  true
 			this.reload = false
 			console.log('Start fetc data')
@@ -91,7 +92,8 @@ export default {
 							return false
 						}
 						r.contents.forEach(v=>{
-							if(v.duration && v.duration.length < 5 ){
+							let ceki = this.$store.state.data.filter(c => c.vid === v.vid)
+							if(ceki.length === 0){
 								this.listOfItems.push(
 									{
 										title:this.capitalizeFirstLetter(v.title.replace(/[^a-zA-Z0-9\- ]/g, "")), 
@@ -100,9 +102,24 @@ export default {
 										download_text:'Download',
 										downloaded:false,
 										downloaded_path:null,
+										btn_color:'#7f8c8d',
+										pic:v.img,
 									}
 								)
-							}
+							}else{
+								this.listOfItems.push(
+									{
+										title:this.capitalizeFirstLetter(v.title.replace(/[^a-zA-Z0-9\- ]/g, "")), 
+										duration:v.duration, 
+										vid:v.vid,
+										download_text:'Play',
+										downloaded:true,
+										downloaded_path:ceki[0].path,
+										btn_color:'#27ae60',
+										pic:v.img,
+									}
+								)
+							}							
 						})
 					}
 					
@@ -115,25 +132,8 @@ export default {
 				});
 		},
 		download(id, title, k){
-			//console.log(this.listOfItems[k]['downloaded'])
 			if(this.listOfItems[k]['downloaded']){
-				// let openf = new ShareFile();
-				// openf.open( { 
-					// path: this.listOfItems[k]['downloaded_path'], 
-					// intentTitle: 'Open file with:', // optional Android
-					// rect: { // optional iPad
-						// x: 110,
-						// y: 110,
-						// width: 0,
-						// height: 0
-					// },
-					// options: true, // optional iOS
-					// animated: true // optional iOS
-				// });
-				
-				this.$showModal(ModalComponent, { props: { id: 14 }});
-				
-				snackbar.simple('Mp3 tersimpan di folder Download', '#fff', '#3498db', 3, false)
+				this.$showModal(ModalComponent, { props: { mp3: this.listOfItems[k]['downloaded_path'], pic:this.listOfItems[k]['pic'] }, fullscreen: false});
 				return false
 			}
 			console.log('Start Download')
@@ -165,7 +165,6 @@ export default {
 			download.downloadFile("http://videv.online/converter/"+filename+".mp3").then(file => { 
 				console.log("Success", file);
 				
-				console.log(123)
 				var documents = fs.knownFolders.documents();
 				let fileName = file._name;
 				var path = fs.path.join(documents.path, fileName);
@@ -177,8 +176,7 @@ export default {
 				let mp3 = fs.File.fromPath(path)
 				permissions.requestPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, "I need these permissions because I'm cool")
 				  .then( () => {
-					console.log("Woo Hoo, I have the power!");
-					 let mp3ok = fs.File.fromPath(downloadedFilePath)
+					let mp3ok = fs.File.fromPath(downloadedFilePath)
 					const binarySource = mp3.readSync((err) => {
 						console.log(err);
 					});
@@ -189,15 +187,18 @@ export default {
 						});		
 					this.listOfItems[k]['downloaded'] = true
 					this.listOfItems[k]['downloaded_path'] = downloadedFilePath
-					
-					snackbar.simple('Berhasil mendownload, mp3 tersimpan di folder Download', 'white', '#3498db', 3, false)
+					console.log('insert data:');
+					console.log({vid:this.listOfItems[k]['vid'],title:fileName, path:downloadedFilePath});
+					this.$store.dispatch("insert", {vid:this.listOfItems[k]['vid'],title:fileName, path:downloadedFilePath});
+					// snackbar.simple('Berhasil mendownload, mp3 tersimpan di folder Download', 'white', '#3498db', 3, false)
 				  })
 				  .catch( () => {
 					 console.log("Uh oh, no permissions - plan B time!");
 					 return false;
 				  });
 				
-				this.listOfItems[k]['download_text'] = 'Open'
+				this.listOfItems[k]['download_text'] = 'Play'
+				this.listOfItems[k]['btn_color'] = '#27ae60'
 			}).catch(error => {
 				this.listOfItems[k]['download_text'] = 'Download'
 				snackbar.simple('Terjadi kesalahan, ketika mendownload mp3', 'white', 'red', 3, false)
@@ -219,9 +220,7 @@ export default {
 		}
 	},
 	created(){		
-		console.log('Mounted')
 		this.fetcData()
-		console.log('End Mounted');	
 	},
 	computed: {
 		routerOptions() {

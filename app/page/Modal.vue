@@ -4,12 +4,22 @@
 
 	
 	<StackLayout class="home-panel">
-				<Slider v-model="time" :maxValue="maxTime" width="100%" @valueChange="changeTime"/>
-						
-				<Button class="playButton" v-show="pauseShow" width="100%" @tap="pause" :text="puaseText" />
-				<Button class="playButton" v-show="playShow" width="100%" @tap="play" text="Putar" />
-									<Button class="playButton" v-show="stopShow" width="100%" @tap="stop" text="Stop" />	
-			</StackLayout>
+		
+		<Image  
+			:src="pic" 
+			stretch="aspectFit" 
+			width="90%"
+			margin="5"
+			/>
+		
+		<Slider v-model="time" :maxValue="maxTime" width="100%" @valueChange="changeTime"/>
+		
+		<WrapLayout align="center" padding="10" borderWidth="1" borderColor="#d8d8d8">
+          <MDBBtn v-show="playShow" icon="play" @tap.native="play" mdbColor="default" width="50" />
+          <MDBBtn v-show="pauseShow" icon="pause" @tap.native="pause" mdbColor="secondary" width="50" />
+          <MDBBtn v-show="stopShow" icon="stop" @tap.native="stop" mdbColor="info" width="50" />
+        </WrapLayout>		
+	</StackLayout>
 
   </Page>
 </template>
@@ -21,12 +31,17 @@ const permissions = require('nativescript-permissions');
 const player = new audio.TNSPlayer();
 import { setInterval, clearInterval } from "tns-core-modules/timer";
 const app = require("application");
+import { MDBBtn } from './../components/Components/Button'
 let id;
 
 export default {
+	props: ['mp3','pic'],
+	components: {
+		MDBBtn,
+	},
 	data() {
 		return {
-		mp3:'~/assets/long.mp3',
+		//mp3:'~/assets/long.mp3',
 		sinMode:true,
 		detMode:false,
 		playing:false,
@@ -137,7 +152,7 @@ export default {
 	},
 	
 	mounted(){
-			
+		this.play()
 	},
 	destroyed() {
 		this.stop()

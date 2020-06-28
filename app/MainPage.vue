@@ -49,7 +49,7 @@ export default {
 	data(){
 		return{
 			title:'MP3 Music Downloader',
-			query : '',
+			query : 'ost the legend of blue sea',
 		}
 	},
 	components: {
@@ -60,11 +60,6 @@ export default {
 	},
 	methods: {
 		find(){
-			console.log(223);
-			this.$showModal(ModalComponent, { props: { id: 14 }, fullscreen: false});
-		},
-		findx(){
-			console.log(123)
 			if(this.query == '' || this.query === null){
 				console.log(234)
 				const snackbar = new SnackBar()
@@ -116,7 +111,7 @@ export default {
 		},
 	},
 	created(){
-		
+		this.$store.dispatch("query");
 	},
 }
 </script>
