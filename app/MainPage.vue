@@ -12,17 +12,21 @@
 		<ScrollView ~mainContent>
 			<StackLayout>
 				<StackLayout padding="20 10 10 10">
-					  <Image @tap="ceki" src="~/assets/images/logo190.jpg" width="30%" marginBottom="10" />
-					  <Label text="Download File Audio Mp3 Gratis!" textWrap="true" color="black" textAlignment="center" />
-					  <Label text="Silahkan masukkan kata kunci anda" marginTop="4" textWrap="true" textAlignment="center" />
 					  
-					  <WrapLayout paddingTop="10">
-							<StackLayout width="100%"  borderWidth="1" borderColor="#d8d8d8" >
-								<TextField v-model="query" hint="Didi Kempot Pemer Bojo" paddingBottom="5" :borderBottomColor="active2 ? '#4285f4' : '#ced4da'" borderBottomWidth="1" @focus="active2 = true" @blur="active2 = false" />
-							</StackLayout>
-							<StackLayout width="100%">
-								<MDBBtn text="Cari" backgroundColor="#2ed573" color="white" marginTop="15" horizontalAlignment="center" @tap.native="find" />
-							</StackLayout>
+					  <WrapLayout marginTop="10">
+					  <MDBCard title="Kolom Pencarian" text="Silahkan masukkan kata kunci anda">
+						<StackLayout width="100%">
+							<TextField v-model="query" hint="Lagu Rock" paddingBottom="5" :borderBottomColor="active2 ? '#4285f4' : '#ced4da'" borderBottomWidth="1" @focus="active2 = true" @blur="active2 = false" />
+						</StackLayout>
+						<MDBBtn icon="search" @tap.native="find" text="Cari" mdbColor="primary" marginTop="15" />
+						<MDBBtn text="Reset" @tap.native="reset" backgroundColor="#fff" color="#000" marginTop="15" />
+					  </MDBCard>
+					</WrapLayout>
+					  
+					  <WrapLayout marginTop="10">
+						  <MDBCard img="~/assets/images/logo190.jpg" title="Daftar Lagu Tersimpan" text="Dengarkan Mp3 secara offline disini">
+							<MDBBtn text="Lihat" mdbColor="primary" marginTop="15" />
+						  </MDBCard>
 					  </WrapLayout>
 				</StackLayout>
 				  
@@ -34,7 +38,10 @@
 </template>
 
 <script>
+
+
 import { Navigation } from './views/Navigation'
+import { MDBCard } from './components/Components/Card'
 import { MDBBtn } from './components/Components/Button'
 import { MDBIcon } from './components/Content/Icon'
 import { SnackBar, SnackBarOptions } from "@nstudio/nativescript-snackbar"
@@ -49,16 +56,20 @@ export default {
 	data(){
 		return{
 			title:'MP3 Music Downloader',
-			query : 'ost the legend of blue sea',
+			query : 'Suara Ayam',
 		}
 	},
 	components: {
 		Navigation,
 		MDBBtn,
+		MDBCard,
 		MDBIcon,
-		Leftside
+		Leftside,
 	},
 	methods: {
+		reset(){
+			this.query = ''
+		},
 		find(){
 			if(this.query == '' || this.query === null){
 				console.log(234)

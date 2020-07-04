@@ -28,6 +28,7 @@ import modalsPage from '../views/Categories/Modals'
 import navigationPage from '../views/Categories/Navigation'
 
 import mainpage from '../MainPage'
+import downloaded from '../Downloaded'
 
 const router = { 
    home, 
@@ -58,6 +59,7 @@ const router = {
    navigationPage,
    
    mainpage,
+   downloaded,
 }
 
 export default router

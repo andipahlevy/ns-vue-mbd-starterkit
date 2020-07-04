@@ -99,7 +99,7 @@ export default {
 										title:this.capitalizeFirstLetter(v.title.replace(/[^a-zA-Z0-9\- ]/g, "")), 
 										duration:v.duration, 
 										vid:v.vid,
-										download_text:'Download',
+										download_text:'Play',
 										downloaded:false,
 										downloaded_path:null,
 										btn_color:'#7f8c8d',
@@ -155,7 +155,7 @@ export default {
 					}
 				})
 				.catch((e) => {
-					this.listOfItems[k]['download_text'] = 'Download'
+					this.listOfItems[k]['download_text'] = 'Play'
 					snackbar.simple('Terjadi kesalahan, ketika generate mp3', 'white', 'red', 3, false)
 				});
 		},
@@ -204,7 +204,7 @@ export default {
 				this.listOfItems[k]['download_text'] = 'Play'
 				this.listOfItems[k]['btn_color'] = '#27ae60'
 			}).catch(error => {
-				this.listOfItems[k]['download_text'] = 'Download'
+				this.listOfItems[k]['download_text'] = 'Play'
 				snackbar.simple('Terjadi kesalahan, ketika mendownload mp3', 'white', 'red', 3, false)
 			})
 		},
